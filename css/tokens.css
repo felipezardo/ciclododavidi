@@ -1,0 +1,62 @@
+/* Design tokens: cores e tipografia extraídas do livro e da ficha oficial */
+:root {
+  --orange: #F7931E;
+  --orange-press: #E07B0B;
+  --orange-text: #B25800;
+  --ink: #231F20;
+  --white: #fff;
+
+  --bg: #F3EBDC;
+  --paper: #FFFBF2;
+  --cream: #FFEFD0;
+  --peach: #FCE0CC;
+  --peach-2: #FBB98A;
+  --iconic: #FFD89C;
+  --text: #231F20;
+  --text-2: #5C514A;
+  --line: #231F20;
+  --line-soft: rgba(35, 31, 32, .22);
+  --shadow: 3px 3px 0 #231F20;
+  --shadow-lg: 6px 6px 0 #231F20;
+  --bar: #231F20;
+  --bar-text: #fff;
+  --field: #fff;
+  --field-text: #231F20;
+  --ok: #2E7D32;
+  --bad: #B3261E;
+  --overlay: rgba(28, 22, 16, .62);
+  --die-face: #FFF6E4;
+  --die-pip: #231F20;
+
+  --font-head: "Jost", "Futura", "Avenir Next", "Century Gothic", system-ui, sans-serif;
+  --font-body: "EB Garamond", "Sabon", "Palatino Linotype", Georgia, serif;
+
+  --r: 2px;
+  --header-h: 58px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #141211;
+  --paper: #1E1A18;
+  --cream: #2A221C;
+  --peach: #33271F;
+  --peach-2: #4B3425;
+  --iconic: #5A3F22;
+  --text: #F3E9DA;
+  --text-2: #B9AB9C;
+  --line: #8C7A69;
+  --line-soft: rgba(243, 233, 218, .2);
+  --shadow: 3px 3px 0 #000;
+  --shadow-lg: 6px 6px 0 #000;
+  --bar: #0B0909;
+  --bar-text: #F3E9DA;
+  --field: #120F0E;
+  --field-text: #F3E9DA;
+  --orange-text: #F7931E;
+  --ok: #7BC47F;
+  --bad: #FF8A80;
+  --overlay: rgba(0, 0, 0, .7);
+  color-scheme: dark;
+}
