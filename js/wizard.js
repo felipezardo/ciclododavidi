@@ -292,7 +292,9 @@ export function openWizard({ onDone }) {
   function paintNav() {
     const v = validity(); const last = state.step === STEPS.length - 1;
     back.disabled = state.step === 0;
-    clear(next).append(last ? [icon('check', 18), t(['Create Kid', 'Criar criança'])] : [t(['Next', 'Próximo']), icon('next', 18)]);
+    clear(next);
+    if (last) next.append(icon('check', 18), t(['Create Kid', 'Criar criança']));
+    else next.append(t(['Next', 'Próximo']), icon('next', 18));
     next.disabled = !v.ok;
     note.textContent = v.ok ? '' : v.msg;
   }

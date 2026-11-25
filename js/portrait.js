@@ -2,7 +2,7 @@ import { h, icon, openModal, clamp, toast } from './ui.js';
 import { t } from './i18n.js';
 import { TYPES } from './data-types.js';
 
-export const artFor = (type) => `assets/kids/${type}.jpg`;
+export const artFor = (type) => `assets/kids/${type}.webp`;
 
 /** Cria o elemento de retrato; retorna { el, update(char) } */
 export function portrait(char, { cls = '' } = {}) {

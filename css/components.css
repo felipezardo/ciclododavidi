@@ -127,4 +127,4 @@ button.choice:hover:not(:disabled) { transform: translate(-1px, -1px); box-shado
 .check-list .checkbox { margin-top: .1rem; }
 .xp-sum { font-family: var(--font-head); font-weight: 700; } .xp-total { font-size: 1.3rem; color: var(--orange-text); }
 .empty-state { display: grid; justify-items: center; gap: .9rem; text-align: center; padding: 2rem 1rem; border: 2px dashed var(--line-soft); background: var(--paper); }
-.empty-art { height: 160px; width: auto; opacity: .9; }
+.empty-art { height: 190px; width: auto; padding: .6rem 1rem 0; background: #F4EBDA; border: 2px solid var(--line); border-bottom: 5px solid var(--orange); box-shadow: var(--shadow); }

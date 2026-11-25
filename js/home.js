@@ -37,7 +37,7 @@ export function renderHome(host, nav) {
           h('button', { type: 'button', class: 'btn btn-sm', onclick: () => file.click() }, icon('upload', 16), t(['Import', 'Importar'])), file,
           h('button', { type: 'button', class: 'btn btn-sm', disabled: !list.length, onclick: () => exportJSON(list) }, icon('download', 16), t(['Export all', 'Exportar todas'])))),
       list.length ? h('ul', { class: 'kid-grid' }, list.map(kidCard)) :
-        h('div', { class: 'empty-state' }, h('img', { src: 'assets/kids/' + TYPES[Math.floor(Date.now() / 86400000) % TYPES.length].key + '.jpg', alt: '', class: 'empty-art' }),
+        h('div', { class: 'empty-state' }, h('img', { src: 'assets/kids/' + TYPES[Math.floor(Date.now() / 86400000) % TYPES.length].key + '.webp', alt: '', class: 'empty-art' }),
           h('p', null, t(['No Kids yet. Create your first one, or import a file.', 'Nenhuma criança ainda. Crie a primeira ou importe um arquivo.'])),
           h('button', { type: 'button', class: 'btn btn-primary', onclick: startWizard }, icon('plus', 18), t(['Create a Kid', 'Criar uma criança']))));
   }
