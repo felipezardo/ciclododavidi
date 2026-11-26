@@ -253,6 +253,12 @@ export function createRoller(getChar, { onChange } = {}) {
     });
   }
 
+  function resetRoll() {
+    if (st.rolling) return;
+    st.current = null; clear(tray); clear(verdict); verdict.className = 'verdict';
+    root.classList.remove('has-roll'); paintActions(); onChange && onChange();
+  }
+
   /* ----- histórico ----- */
   function pushHistory(isNew) {
     const cur = st.current; if (!cur) return;
@@ -264,7 +270,7 @@ export function createRoller(getChar, { onChange } = {}) {
   function paintHistory() {
     clear(histHead); clear(histList);
     histHead.append(h('h3', null, t(['Roll history', 'Histórico de rolagens'])),
-      h('button', { type: 'button', class: 'btn btn-sm btn-ghost', disabled: !st.history.length, onclick: () => { st.history = []; setRolls(getChar().id, []); paintHistory(); } }, icon('trash', 15), t(['Clear', 'Limpar'])));
+      h('button', { type: 'button', class: 'btn btn-sm btn-ghost', disabled: !st.history.length, onclick: () => { st.history = []; setRolls(getChar().id, []); resetRoll(); paintHistory(); } }, icon('trash', 15), t(['Clear', 'Limpar'])));
     if (!st.history.length) histList.append(h('li', { class: 'empty' }, t(['No rolls yet. Your results will appear here.', 'Nenhuma rolagem ainda. Os resultados aparecem aqui.'])));
     st.history.forEach((e) => {
       const ok = e.s >= e.need;
@@ -285,5 +291,5 @@ export function createRoller(getChar, { onChange } = {}) {
   function selectRoll(kind, key) { st.sel = { kind, key }; refresh(); }
   refresh(); paintHistory();
   onLang(() => { refresh(); paintHistory(); if (st.current) refreshResult(); });
-  return { el: root, refresh, selectRoll, doRoll, reset() { st.current = null; clear(tray); clear(verdict); root.classList.remove('has-roll'); refresh(); } };
+  return { el: root, refresh, selectRoll, doRoll, reset() { resetRoll(); refresh(); } };
 }

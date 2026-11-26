@@ -1,5 +1,13 @@
 import { t, getLang, setLang, onLang } from './i18n.js';
 
+/* append seguro: ignora null/false e achata arrays (evita "null" e "[object ...]" na tela) */
+if (typeof Element !== 'undefined') {
+  const nativeAppend = Element.prototype.append;
+  Element.prototype.append = function (...kids) {
+    nativeAppend.apply(this, kids.flat(Infinity).filter((k) => k != null && k !== false));
+  };
+}
+
 /* ---------- DOM helper ---------- */
 export function h(tag, props, ...kids) {
   const el = document.createElement(tag);

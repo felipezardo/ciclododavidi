@@ -7,7 +7,7 @@
 export const TYPES = [
   {
     key: 'bookworm',
-    name: ['Bookworm', 'Rato de Biblioteca'],
+    name: ['Bookworm', 'CDF'],
     skills: ['calculate', 'investigate', 'comprehend'],
     blurb: [
       'You travel the world through books and talk with poets and philosophers long gone. In real life you wish your pimples would show less, and you long for the day you leave this place.',
@@ -35,7 +35,7 @@ export const TYPES = [
   },
   {
     key: 'computer-geek',
-    name: ['Computer Geek', 'Geek de Computador'],
+    name: ['Computer Geek', 'Nerd de Computação'],
     skills: ['calculate', 'program', 'comprehend'],
     blurb: [
       'You know exactly what matters: beating the record in Super Mario Bros, building programs, understanding how a robot works, or casting the right spell on roleplaying nights. Who cares what the others think?',
@@ -91,7 +91,7 @@ export const TYPES = [
   },
   {
     key: 'jock',
-    name: ['Jock', 'Atleta'],
+    name: ['Jock', 'Esportista'],
     skills: ['force', 'move', 'contact'],
     blurb: [
       'You feel at home in sweaty locker rooms and lit training fields in the autumn dark. Nothing beats a perfect shot or the ache after practice. You wish everything in life were that easy.',
@@ -203,7 +203,7 @@ export const TYPES = [
   },
   {
     key: 'weirdo',
-    name: ['Weirdo', 'Esquisito'],
+    name: ['Weirdo', 'Esquisitão'],
     skills: ['sneak', 'investigate', 'empathize'],
     blurb: [
       "They tease you for your clothes, your interests and your words, but you don't care. They know nothing about what you've been through. One day you will outshine them all.",

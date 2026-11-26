@@ -299,8 +299,11 @@ export function openWizard({ onDone }) {
     note.textContent = v.ok ? '' : v.msg;
   }
 
+  let lastStep = -1;
   function render() {
     const s = STEPS[state.step];
+    const center = main.closest('.wz-center');
+    const sameStep = lastStep === state.step; const keepY = center ? center.scrollTop : 0;
     clear(rail);
     STEPS.forEach((st, i) => {
       const reach = i <= state.max; const cur = i === state.step;
@@ -309,7 +312,10 @@ export function openWizard({ onDone }) {
     mobileCount.textContent = `${t(['Step', 'Passo'])} ${state.step + 1} / ${STEPS.length}: ${t(s.title)}`;
     mobileBar.setAttribute('aria-valuenow', String(state.step + 1)); mobileBar.firstChild.style.width = ((state.step + 1) / STEPS.length * 100) + '%';
     clear(main).append(h('header', { class: 'wz-step-head' }, h('p', { class: 'wz-kicker' }, `${t(['Step', 'Passo'])} ${state.step + 1}`), h('h2', null, t(s.title)), infoBtn(s.title, s.help, '?')), h('div', { class: 'wz-step-body' }, R[s.id]()));
-    main.scrollTop = 0; const sc = m.body; if (sc) sc.scrollTop = 0; main.closest('.wz-center').scrollTop = 0;
+    const c2 = main.closest('.wz-center');
+    if (c2) c2.scrollTop = sameStep ? keepY : 0;
+    main.classList.remove('anim'); if (!sameStep) { void main.offsetWidth; main.classList.add('anim'); }
+    lastStep = state.step;
     paintNav(); paintSide();
   }
   const unLang = onLang(() => { if (document.body.contains(m.el)) render(); });
