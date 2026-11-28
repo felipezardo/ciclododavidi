@@ -55,7 +55,7 @@ button.choice:active:not(:disabled), .age-card:active, .type-card:active, .strip
 @media (max-width: 560px) {
   .hero { min-height: 70dvh; } .hero-actions .btn { flex: 1 1 100%; }
   .section-head { align-items: flex-start; } .kid-grid { grid-template-columns: 1fr; }
-  .strip-item { width: 112px; } .strip-item img { height: 160px; }
+  .type-strip li { flex-basis: 112px; } .strip-item { grid-template-rows: 160px 2.7em; }
 }
 
 /* ficha: colunas se adaptam à largura real do papel (não da janela), inclusive com o painel de dados aberto */
