@@ -1,4 +1,5 @@
 import { t, getLang, setLang, onLang } from './i18n.js';
+import { sfx } from './sfx.js';
 
 /* append seguro: ignora null/false e achata arrays (evita "null" e "[object ...]" na tela) */
 if (typeof Element !== 'undefined') {
@@ -66,6 +67,8 @@ const P = {
   reset: '<path d="M4.5 12a7.5 7.5 0 1 0 2.5-5.6M4.5 4.5V9H9"/>',
   star: '<path d="M12 4l2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.7-4.8 2.7 1-5.4-4-3.8 5.4-.7z"/>',
   heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/>',
+  volume: '<path d="M4 9.5v5h3.5l5 4v-13l-5 4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>',
+  mute: '<path d="M4 9.5v5h3.5l5 4v-13l-5 4z"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>',
   link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'
 };
 export function icon(name, size = 20, cls = '') {
@@ -144,6 +147,19 @@ export function themeSwitch() {
   return btn;
 }
 
+export function soundSwitch(extra = '') {
+  const btn = h('button', { type: 'button', class: 'theme-btn sound-btn no-sfx ' + extra });
+  const paint = () => {
+    const onNow = sfx.isOn();
+    clear(btn).append(icon(onNow ? 'volume' : 'mute', 20));
+    const label = onNow ? t(['Turn sounds off', 'Desligar os sons']) : t(['Turn sounds on', 'Ligar os sons']);
+    btn.setAttribute('aria-label', label); btn.setAttribute('aria-pressed', String(onNow)); btn.title = label;
+  };
+  btn.addEventListener('click', () => sfx.setOn(!sfx.isOn()));
+  sfx.onChange(paint); onLang(paint); paint();
+  return btn;
+}
+
 /* ---------- Toast ---------- */
 let toastHost;
 export function toast(msg, ms = 2600) {
@@ -169,12 +185,14 @@ export function openModal({ title, body, footer, size = 'md', className = '', on
   document.body.append(backdrop);
   document.body.classList.add('modal-open');
   requestAnimationFrame(() => backdrop.classList.add('in'));
+  sfx.open();
 
   const api = {
     el: dlg, body: bodyEl, footer: foot, head,
     close(result) {
       const i = stack.indexOf(api); if (i >= 0) stack.splice(i, 1);
       backdrop.classList.remove('in');
+      sfx.close();
       document.removeEventListener('keydown', keydown, true);
       setTimeout(() => backdrop.remove(), 200);
       if (!stack.length) document.body.classList.remove('modal-open');

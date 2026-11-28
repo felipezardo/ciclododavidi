@@ -5,6 +5,7 @@ import { TYPES } from './data-types.js';
 import { getChar, saveChar, removeChar, duplicateChar, exportJSON, luckMax, luckNow, penalty, isBroken, normalize } from './store.js';
 import { portrait, openPortraitEditor } from './portrait.js';
 import { createRoller } from './dice.js';
+import { sfx } from './sfx.js';
 
 const L = {
   title: ['CHARACTER SHEET', 'FICHA DE PERSONAGEM'],
@@ -281,18 +282,27 @@ export function renderSheet(id, host, nav) {
     const m = openModal({
       title: t(['Session and Mystery', 'Sessão e Mistério']), size: 'md',
       body: h('div', { class: 'choice-list' },
-        act(t(['Heal all Conditions', 'Curar todas as Condições']), t(['After a scene with your Anchor or in the Hideout.', 'Depois de uma cena com sua Âncora ou no Esconderijo.']), () => { Object.keys(c.cond).forEach((k) => { c.cond[k] = false; }); save(); toast(t(['Conditions healed.', 'Condições curadas.'])); }),
+        act(t(['Heal all Conditions', 'Curar todas as Condições']), t(['After a scene with your Anchor or in the Hideout.', 'Depois de uma cena com sua Âncora ou no Esconderijo.']), () => { Object.keys(c.cond).forEach((k) => { c.cond[k] = false; }); save(); sfx.heal(); toast(t(['Conditions healed.', 'Condições curadas.'])); }),
         act(t(['New session', 'Nova sessão']), t(['Refills your Luck Points. Your Pride can be used again if the Mystery spans several sessions.', 'Recupera seus Pontos de Sorte. O Orgulho pode ser usado de novo se o Mistério durar várias sessões.']), () => { c.luckSpent = 0; c.prideUsed = false; save(); toast(t(['Luck refilled.', 'Sorte recuperada.'])); }),
         act(t(['Close the Mystery', 'Encerrar o Mistério']), t(['Heals all Conditions, refills Luck, frees your Pride and removes every Item except your Iconic Item. Then review your Problem, Pride, Drive and Relationships.', 'Cura todas as Condições, recupera a Sorte, libera o Orgulho e remove todos os Itens, exceto o Item Icônico. Depois, revise Problema, Orgulho, Ímpeto e Relacionamentos.']), () => { Object.keys(c.cond).forEach((k) => { c.cond[k] = false; }); c.luckSpent = 0; c.prideUsed = false; c.items.forEach((it) => { it.name = ''; it.bonus = 0; }); save(); itemRows.forEach((r, i) => { r.querySelector('input[type=text]').value = ''; r.querySelector('input[type=number]').value = 0; }); toast(t(['Mystery closed.', 'Mistério encerrado.'])); })),
       footer: h('button', { type: 'button', class: 'btn', onclick: () => m.close() }, t(['Close', 'Fechar']))
     });
   }
 
+  const onKey = (e) => {
+    if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+    if (document.querySelector('.modal-backdrop')) return;
+    const open = document.body.classList.contains('roller-open');
+    if (e.key === 'Escape' && open) { toggleRoller(false); return; }
+    if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); if (!open) toggleRoller(true); roller.doRoll(); }
+    if ((e.key === 'd' || e.key === 'D') && !e.ctrlKey && !e.metaKey && !e.altKey) { toggleRoller(!open); }
+  };
+  document.addEventListener('keydown', onKey);
   host.append(h('div', { class: 'sheet-page' }, toolbar, paper), drawer, fab);
   paintTitle(); syncFromChar();
   roller.refresh();
   window.addEventListener('resize', () => { [...paper.querySelectorAll('textarea')].forEach(grow); });
   requestAnimationFrame(() => paper.querySelectorAll('textarea').forEach(grow));
 
-  return () => { document.removeEventListener('click', closeMenu); document.body.classList.remove('roller-open', 'modal-open'); closePopover(); };
+  return () => { document.removeEventListener('click', closeMenu); document.removeEventListener('keydown', onKey); document.body.classList.remove('roller-open', 'modal-open'); closePopover(); };
 }

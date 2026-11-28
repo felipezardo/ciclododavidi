@@ -1,0 +1,100 @@
+/* ===== Sensação de toque, proporções e responsividade ===== */
+button, a, select, summary, label, input, [role="checkbox"] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button, .btn, .chip, .choice, summary, .nav-link { user-select: none; -webkit-user-select: none; }
+
+/* área de toque do "i" centralizada */
+.info-btn::before { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+/* estados de pressionar (sensação de botão físico) */
+.chip:active:not(:disabled) { transform: translateY(2px); }
+button.choice:active:not(:disabled), .age-card:active, .type-card:active, .strip-item:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--line); transition-duration: .05s; }
+.seg button:active { transform: translateY(1px); filter: brightness(.95); }
+.step-btn:active:not(:disabled) { transform: scale(.88); }
+.checkbox:active, .xp-box:active, .luck-box:active:not(:disabled) { transform: translate(1px, 1px) scale(.94); box-shadow: 1px 1px 0 var(--line); }
+.icon-btn:active, .roll-mini:active, .flag-btn:active, .theme-btn:active { transform: scale(.9); }
+.fab:active { transform: translate(2px, 2px) scale(.97); }
+.menu-item:active, .rail-btn:active:not(:disabled), .g-nav a:active { background: var(--peach); }
+.kid-card:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--line); }
+
+/* marcar caixas dá um pequeno "pop" */
+.checkbox:checked { animation: pop-in .22s var(--ease); }
+.xp-box.on, .luck-box.on { animation: pop-in .22s var(--ease); }
+@keyframes pop-in { 0% { transform: scale(.82); } 60% { transform: scale(1.1); } 100% { transform: none; } }
+@keyframes viewin { from { opacity: 0; } }
+.view > * { animation: viewin .28s ease-out backwards; }
+
+/* sem "hover grudado" em telas de toque */
+@media (hover: none) {
+  .btn:hover:not(:disabled), button.choice:hover:not(:disabled), .age-card:hover, .type-card:hover, .kid-card:hover, .chip:hover:not(:disabled), .strip-item:hover, .fab:hover, .theme-btn:hover, .flag-btn:hover { transform: none; }
+  .btn:hover:not(:disabled), button.choice:hover:not(:disabled), .age-card:hover, .type-card:hover { box-shadow: var(--shadow); }
+  .kid-card:hover { box-shadow: var(--shadow); }
+  .strip-item:hover img, .type-card:hover .type-art img { transform: none; }
+}
+
+/* alvos de toque maiores em telas de toque */
+@media (pointer: coarse) {
+  .step-btn { width: 42px; height: 42px; }
+  .numbox { height: 40px; width: 56px; } .checkbox { width: 38px; height: 38px; }
+  .luck-box { width: 32px; height: 32px; } .roll-mini { width: 38px; height: 38px; }
+  .info-btn { width: 26px; height: 26px; } .info-btn::before { width: 44px; height: 44px; }
+  .icon-btn { width: 44px; height: 44px; } .chip { min-height: 42px; } .seg button { min-height: 42px; }
+  .row { min-height: 48px; } .menu-item { padding: .8rem .9rem; }
+}
+
+/* cabeçalho em telas bem estreitas */
+@media (max-width: 420px) {
+  .site-header { gap: .25rem; padding-inline: .5rem; } .header-tools { gap: .15rem; }
+  .flag-btn { width: 34px; } .flag-btn svg { width: 24px; height: auto; }
+  .theme-btn { width: 36px; height: 36px; } .nav-link { padding: .5rem .45rem; }
+  .brand img { height: 30px; }
+}
+.sound-btn.in-bar { width: 32px; height: 32px; margin-left: auto; margin-right: .1rem; border-color: rgba(255,255,255,.45); }
+.sound-btn[aria-pressed="false"] { opacity: .65; }
+
+/* hero e página inicial */
+@media (max-width: 560px) {
+  .hero { min-height: 70dvh; } .hero-actions .btn { flex: 1 1 100%; }
+  .section-head { align-items: flex-start; } .kid-grid { grid-template-columns: 1fr; }
+  .strip-item { width: 112px; } .strip-item img { height: 160px; }
+}
+
+/* ficha: colunas se adaptam à largura real do papel (não da janela), inclusive com o painel de dados aberto */
+@media screen {
+  @container paper (max-width: 880px) {
+    .sheet-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+    .col { display: contents; }
+    .col-right > .info-panel { order: 1; } .col-left > :nth-child(1) { order: 2; } .col-left > :nth-child(2) { order: 3; } .col-left > :nth-child(3) { order: 4; } .col-left > :nth-child(4) { order: 5; }
+    .col-right > :nth-child(2) { order: 6; } .col-right > :nth-child(3) { order: 7; } .col-right > :nth-child(4) { order: 8; }
+    .col-right > .info-panel, .col-right > :nth-child(2), .col-right > :nth-child(3), .col-right > :nth-child(4) { grid-column: 1 / -1; }
+  }
+  @container paper (max-width: 560px) {
+    .sheet-grid { grid-template-columns: minmax(0, 1fr); }
+    .col-left > * { grid-column: 1 / -1; }
+  }
+  @container info (max-width: 600px) {
+    .info-top { grid-template-columns: 130px 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-grid .cell:nth-child(odd) { border-right: 0; }
+    .info-grid .cell:nth-last-child(-n+2) { border-bottom: 2px solid var(--line); }
+    .info-grid .cell:last-child { border-bottom: 0; }
+  }
+  @container info (max-width: 430px) {
+    .info-top { grid-template-columns: 1fr; }
+    .portrait-btn { border-right: 0; border-bottom: 2px solid var(--line); }
+    .portrait-btn .portrait { aspect-ratio: 4 / 3; min-height: 0; max-height: 260px; }
+  }
+}
+@media (max-width: 420px) {
+  .xp-row { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .rel-row { padding-inline: .6rem; }
+  .sheet-page { padding-bottom: 5.5rem; }
+}
+
+/* painel de dados */
+@media (max-width: 380px) { .roll-sub { grid-template-columns: 1fr; } .roll-sub .btn { flex-direction: row; min-height: 44px; } .chip { font-size: .8rem; } }
+@media (max-height: 520px) and (orientation: landscape) { .roller-drawer { height: 100dvh; top: 0; } .tray { --die: 44px; min-height: 86px; } .hero { min-height: 100dvh; } }
+
+/* assistente: telas baixas e rodapé seguro */
+@media (max-height: 560px) { .wz-center { padding-block: .75rem; } .wz-step-head h2 { font-size: 1.4rem; } }
+.wizard .modal-foot { gap: .5rem; }
+@media (max-width: 480px) { .age-grid { grid-template-columns: repeat(2, 1fr); } .skill-groups { grid-template-columns: 1fr; } .points { font-size: .75rem; } .stat-text span { font-size: .92rem; } }

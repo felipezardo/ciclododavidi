@@ -33,3 +33,7 @@ Publique a pasta como está (Vercel, Netlify, GitHub Pages, Cloudflare Pages). N
 - Dados salvos no navegador (localStorage). Use Exportar para backup.
 - Fontes (Jost, EB Garamond) vêm do Google Fonts; há fallbacks locais.
 - Projeto privado: arte e texto pertencem a Simon Stålenhag e Free League.
+
+## Sons e atalhos
+- Sons gerados em tempo real (Web Audio, sem arquivos). Botão de alto-falante no cabeçalho e no painel de dados; a preferência fica salva. Vibração leve em celulares quando os sons estão ligados.
+- Na ficha: `R` rola, `D` abre/fecha o painel de dados, `Esc` fecha.

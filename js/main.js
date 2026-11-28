@@ -1,11 +1,13 @@
 import { initLang, onLang, t } from './i18n.js';
-import { h, initTheme, themeSwitch, langSwitch, icon, toast, clear, closePopover } from './ui.js';
+import { h, initTheme, themeSwitch, langSwitch, soundSwitch, icon, toast, clear, closePopover } from './ui.js';
+import { initFeedback } from './sfx.js';
 import { renderHome } from './home.js';
 import { renderSheet } from './sheet.js';
 import { renderGuide } from './guide.js';
 
 initLang();
 initTheme();
+initFeedback();
 
 const app = document.getElementById('app');
 const view = h('main', { id: 'view', class: 'view', tabindex: '-1' });
@@ -25,7 +27,7 @@ function header() {
   onLang(paintNav);
   return h('header', { class: 'site-header' },
     h('a', { class: 'brand', href: '#/', 'aria-label': 'Tales from the Loop' }, h('img', { src: 'assets/img/emblem.png', alt: '' }), h('span', { class: 'brand-text' }, 'Tales from the Loop')),
-    nav, h('div', { class: 'header-tools' }, langSwitch(), themeSwitch()));
+    nav, h('div', { class: 'header-tools' }, langSwitch(), soundSwitch(), themeSwitch()));
 }
 
 function currentRoute() {

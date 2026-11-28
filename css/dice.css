@@ -24,7 +24,7 @@ body.roller-open .roller-drawer { transform: none; visibility: visible; }
 
 /* bandeja e dados 3D */
 .tray-wrap { display: none; } .roller.has-roll .tray-wrap { display: grid; gap: .6rem; }
-.tray { --die: 58px; display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--die) + 14px), 1fr)); gap: 14px 8px; justify-items: center; padding: 1.1rem .6rem .9rem; min-height: 110px; background: var(--peach-2); border: 2px solid var(--line); box-shadow: inset 3px 3px 0 rgba(0,0,0,.15); }
+.tray { --die: 58px; display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--die) + 14px), 1fr)); gap: 14px 8px; justify-items: center; padding: 1.1rem .6rem .9rem; min-height: 110px; position: relative; z-index: 1; overflow: hidden; background: var(--peach-2); border: 2px solid var(--line); box-shadow: inset 3px 3px 0 rgba(0,0,0,.15); }
 .die { position: relative; width: var(--die); height: var(--die); }
 .die-body { position: absolute; inset: 0; perspective: 420px; }
 .cube { position: absolute; inset: 0; transform-style: preserve-3d; }
@@ -39,7 +39,7 @@ body.roller-open .roller-drawer { transform: none; visibility: visible; }
 .die-shadow { position: absolute; left: 12%; right: 12%; bottom: -9px; height: 9px; border-radius: 50%; background: rgba(0,0,0,.28); filter: blur(2px); transition: transform .3s, opacity .3s; }
 .die.tossing .die-body { animation: toss var(--toss, 1100ms) cubic-bezier(.3, .6, .4, 1) both; }
 .die.tossing .die-shadow { animation: shadow var(--toss, 1100ms) ease-out both; }
-@keyframes toss { 0% { transform: translate(-40px, -80px) scale(1.25); } 35% { transform: translate(0, 0) scale(1); } 52% { transform: translateY(-22px); } 68% { transform: translateY(0); } 80% { transform: translateY(-8px); } 100% { transform: none; } }
+@keyframes toss { 0% { transform: translate(var(--tx, -40px), -110px) scale(1.3) rotate(var(--rz, 0deg)); } 35% { transform: translate(0, 0) scale(1); } 52% { transform: translateY(-22px); } 68% { transform: translateY(0); } 80% { transform: translateY(-8px); } 100% { transform: none; } }
 @keyframes shadow { 0% { transform: scale(.5); opacity: .3; } 35% { transform: scale(1); opacity: 1; } 52% { transform: scale(.7); opacity: .6; } 68% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); } }
 .die.landed .die-body { animation: settle .35s var(--ease); }
 @keyframes settle { 0% { transform: scale(1.08); } 100% { transform: none; } }

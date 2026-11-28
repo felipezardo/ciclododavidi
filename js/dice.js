@@ -1,7 +1,8 @@
-import { h, icon, clear, openModal, toast, infoBtn, clamp } from './ui.js';
+import { h, icon, clear, openModal, toast, infoBtn, clamp, soundSwitch } from './ui.js';
 import { t, tf, onLang } from './i18n.js';
 import { ATTRS, SKILLS, SKILL_BY_KEY, CHANCE } from './data-rules.js';
 import { saveChar, luckNow, penalty, isBroken, getRolls, setRolls } from './store.js';
+import { sfx } from './sfx.js';
 
 /* ---------- RNG justo ---------- */
 export function d6() {
@@ -45,6 +46,8 @@ export function makeDie(value = 1) {
       cube.style.transform = `rotateX(${-sx / 2 + 30}deg) rotateY(${-sy / 2 - 40}deg)`;
       el.classList.add('tossing');
       el.style.setProperty('--toss', `${dur}ms`);
+      el.style.setProperty('--tx', `${Math.round(Math.random() * 90 - 45)}px`);
+      el.style.setProperty('--rz', `${Math.round(Math.random() * 40 - 20)}deg`);
       return new Promise((res) => {
         setTimeout(() => {
           void cube.offsetWidth;
@@ -163,7 +166,7 @@ export function createRoller(getChar, { onChange } = {}) {
     mountTray();
     await animate(st.current.dice.map((_, i) => i));
     pushHistory(true);
-    refreshResult();
+    refreshResult(true);
   }
   function mountTray() {
     clear(tray); clear(verdict);
@@ -172,13 +175,15 @@ export function createRoller(getChar, { onChange } = {}) {
   }
   async function animate(indexes) {
     st.rolling = true; paintActions();
-    const ps = indexes.map((i, k) => st.current.dice[i].die.roll(st.current.dice[i].v, k * 70));
+    sfx.rattle(900 + Math.min(indexes.length, 8) * 60, 3);
+    let clacks = 0;
+    const ps = indexes.map((i, k) => st.current.dice[i].die.roll(st.current.dice[i].v, k * 70).then(() => { if (clacks++ < 7) sfx.clack(0.7 + Math.random() * 0.3); sfx.vibrate(8); }));
     await Promise.all(ps);
     st.rolling = false;
   }
   const successes = () => st.current.dice.filter((d) => d.v === 6).length + (st.current.pride ? 1 : 0);
 
-  function refreshResult() {
+  function refreshResult(announce = false) {
     const cur = st.current; if (!cur) return;
     cur.dice.forEach((d) => d.die.el.classList.toggle('kept', d.v === 6));
     const s = successes(); const ok = s >= cur.need; const extra = Math.max(0, s - cur.need);
@@ -190,6 +195,11 @@ export function createRoller(getChar, { onChange } = {}) {
       ok && extra ? h('span', { class: 'extra' }, t(['You can buy ', 'Você pode comprar ']) + extra + t([' bonus effect(s).', ' efeito(s) bônus.'])) : null,
       !ok ? h('span', { class: 'extra' }, t(['Something changes, probably for the worse. Push, spend Luck, or use Pride.', 'Algo muda, provavelmente para pior. Force a rolagem, gaste Sorte ou use o Orgulho.'])) : null);
     paintActions(); pushHistory(false); onChange && onChange();
+    if (announce) {
+      if (ok) { sfx.success(extra); } else { sfx.fail(); }
+      if (cur.dice.some((d) => d.v === 6)) setTimeout(() => sfx.six(), ok ? 380 : 120);
+      sfx.vibrate(ok ? [12, 40, 18] : 30);
+    }
   }
 
   function paintActions() {
@@ -214,27 +224,27 @@ export function createRoller(getChar, { onChange } = {}) {
     const options = mild.length ? mild : [['broken', ['Broken', 'Acabado']]];
     const pick = await chooseCondition(options, !mild.length);
     if (!pick) return;
-    c.cond[pick] = true; saveChar(c);
+    c.cond[pick] = true; saveChar(c); sfx.thump();
     cur.pushed = true;
     const idx = [];
     cur.dice.forEach((d, i) => { if (d.v !== 6) { d.v = d6(); idx.push(i); } });
     onChange && onChange();
     await animate(idx);
-    refreshResult();
+    refreshResult(true);
   }
   async function useLuck() {
     const c = getChar(); const cur = st.current;
-    c.luckSpent += 1; saveChar(c); cur.luck = true;
+    c.luckSpent += 1; saveChar(c); cur.luck = true; sfx.luck();
     const idx = [];
     cur.dice.forEach((d, i) => { if (d.v !== 6) { d.v = d6(); idx.push(i); } });
     onChange && onChange();
     await animate(idx);
-    refreshResult();
+    refreshResult(true);
   }
   function usePride() {
     const c = getChar(); c.prideUsed = true; saveChar(c);
-    st.current.pride = true; onChange && onChange();
-    refreshResult();
+    st.current.pride = true; sfx.heart(); onChange && onChange();
+    refreshResult(true);
   }
 
   function chooseCondition(options, isBrokenOnly) {
@@ -283,9 +293,10 @@ export function createRoller(getChar, { onChange } = {}) {
 
   /* ----- ciclo ----- */
   function paintHead() {
-    clear(head).append(h('span', null, t(['Dice', 'Dados'])), infoBtn(['How rolling works', 'Como rolar'], () => h('div', null,
+    clear(head).append(h('span', null, t(['Dice', 'Dados'])), soundSwitch('in-bar'), infoBtn(['How rolling works', 'Como rolar'], () => h('div', null,
       h('p', null, t(['Roll one die for your attribute plus one for each level in the matching skill. Every six is a success; you usually need only one.', 'Role um dado por ponto do atributo mais um por nível na perícia correspondente. Cada seis é um sucesso; em geral basta um.'])),
-      h('p', null, t(['After a failure you may push (check a Condition, reroll everything that is not a six), spend a Luck Point, or check your Pride.', 'Depois de uma falha você pode forçar (marcar uma Condição e rolar de novo tudo que não é seis), gastar um Ponto de Sorte ou marcar o Orgulho.']))), '?'));
+      h('p', null, t(['After a failure you may push (check a Condition, reroll everything that is not a six), spend a Luck Point, or check your Pride.', 'Depois de uma falha você pode forçar (marcar uma Condição e rolar de novo tudo que não é seis), gastar um Ponto de Sorte ou marcar o Orgulho.'])),
+      h('p', { class: 'hint' }, t(['Keyboard: R rolls, D opens or closes this panel, Esc closes it.', 'Teclado: R rola, D abre ou fecha este painel, Esc fecha.']))), '?'));
   }
   function refresh() { paintHead(); paintPicker(); paintMods(); paintSummary(); paintActions(); }
   function selectRoll(kind, key) { st.sel = { kind, key }; refresh(); }
